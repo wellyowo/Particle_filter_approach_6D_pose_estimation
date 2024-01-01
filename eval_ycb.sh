@@ -1,5 +1,20 @@
 #!/bin/bash
-python eval.py --dataset ycb\
-  --dataset_root_dir /media/user/433c5472-5bea-42d9-86c4-e0794e47477f/YCB_Video_Dataset\
-  --visualization True \
-  --save_path results/ycb/
+python3 eval.py --dataset ycb\
+  --dataset_root_dir /home/welly/Particle_filter_approach_6D_pose_estimation/dataset/ycb\
+  --visualization False \
+  --save_path results/ycb_300_para/30/
+
+# python3 eval.py --dataset ycb\
+#   --dataset_root_dir /home/welly/Particle_filter_approach_6D_pose_estimation/dataset/ycb\
+#   --visualization False \
+#   --save_path results/ycb_300_test/50/
+
+# python3 eval.py --dataset ycb\
+#   --dataset_root_dir /home/welly/Particle_filter_approach_6D_pose_estimation/dataset/ycb\
+#   --visualization False \
+#   --save_path results/ycb_600_test/30/
+
+# python3 eval.py --dataset ycb\
+#   --dataset_root_dir /home/welly/Particle_filter_approach_6D_pose_estimation/dataset/ycb\
+#   --visualization False \
+#   --save_path results/ycb_600_test/50/

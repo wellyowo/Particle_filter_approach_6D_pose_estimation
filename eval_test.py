@@ -23,6 +23,7 @@ parser.add_argument('--dataset', type=str, default='', help='dataset')
 parser.add_argument('--dataset_root_dir', type=str, default='', help='dataset root dir')
 parser.add_argument('--save_path', type=str, default='',  help='save results path')
 parser.add_argument('--visualization', type=str2bool, default=True,  help='visualization')
+parser.add_argument('--nth_photo', type=int, default=0,  help='show nth testing data result')
 opt = parser.parse_args()
 
 if opt.dataset == 'ycb':
@@ -134,8 +135,8 @@ for model in models:
     corners[model] = corner
 
 if opt.dataset == "ycb":
-    for now in tqdm(range(len(testlist))):
-    # for now in tqdm(range(0, 2949)):
+    # for now in tqdm(range(len(testlist))):
+    for now in tqdm(range(opt.nth_photo, opt.nth_photo+1)):
     # for now in tqdm(range(0, 1857)):
         if opt.visualization == True:
             draw_box = cv2.imread('{0}/{1}-color.jpg'.format(dataset_root_dir, testlist[now]))
@@ -170,8 +171,8 @@ if opt.dataset == "ycb":
         
         if opt.visualization == True:
             cv2.imshow("result", draw_box)
-            key = cv2.waitKey(0)
-            if key == ord('q'):
+            key = cv2.waitKey(10000)
+            if key == ord('q') or key == -1:
                 break
 
     mean_add_s = []

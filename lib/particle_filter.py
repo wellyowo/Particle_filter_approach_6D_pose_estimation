@@ -76,15 +76,20 @@ class ParticleFilter():
             ]
 
             self.depth_sampling_step = 5
+            # without cpn part
+            # -----------------------------------------------------------------------------
             if w_o_CPN:
                 num_particles //= self.depth_sampling_step
             # Same number of particles (180) for all objects.
-            self.num_particles = [num_particles * 2, num_particles * 2, num_particles, num_particles * 2, num_particles* 2, num_particles*2,
-            num_particles, num_particles*2, num_particles*2, num_particles, num_particles*2, num_particles*2, num_particles,
-            num_particles, int(num_particles/2), num_particles*2, int(num_particles/2), num_particles, int(num_particles/2), int(num_particles/2), num_particles*2]
+            # self.num_particles = [num_particles * 2, num_particles * 2, num_particles, num_particles * 2, num_particles* 2, num_particles*2,
+            # num_particles, num_particles*2, num_particles*2, num_particles, num_particles*2, num_particles*2, num_particles,
+            # num_particles, int(num_particles/2), num_particles*2, int(num_particles/2), num_particles, int(num_particles/2), int(num_particles/2), num_particles*2]
+            self.num_particles = [600, 600, 300, 600, 600, 600, 300, 600, 600, 300, 600, 600, 300, 150, 150, 600, 150, 300, 150, 150, 600]
+            self.taus = [0.1, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.2, 0.1]
+            self.gaussian_std = [0.2, 0.05, 0.1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.15, 0.1, 0.1, 0.15, 0.1, 0.05, 0.05, 0.2, 0.05, 0.05, 0.05]
 
-            self.taus = [0.1 for _ in range(len(self.models))] if taus == None else taus
-            self.gaussian_std = [0.1 for _ in range(len(self.models))] if gaussian_std == None else gaussian_std
+            # self.taus = [0.1 for _ in range(len(self.models))] if taus == None else taus
+            # self.gaussian_std = [0.1 for _ in range(len(self.models))] if gaussian_std == None else gaussian_std
 
             self.testlist = []
             input_file = open('{0}/test_data_list.txt'.format(self.dataset_config_dir))
@@ -111,6 +116,12 @@ class ParticleFilter():
             # Same number of particles (720) for all objects.
             self.num_particles = [num_particles*2, num_particles*2, num_particles*2, num_particles*2, num_particles*2, num_particles*2, num_particles*2, num_particles*2]
             self.taus = [0.1 for _ in range(len(self.models))] if taus == None else taus
+            
+            self.w_o_CPN = w_o_CPN
+            self.particle_filter_info_dict = {}
+            self.particle_filter_info = ""
+            self.gaussian_std = [0.1 for _ in range(len(self.models))] if gaussian_std == None else gaussian_std
+
         else:
             print("Write your own dataset config here.")
             exit(0)

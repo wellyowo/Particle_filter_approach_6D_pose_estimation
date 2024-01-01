@@ -20,6 +20,7 @@ parser.add_argument('--taus', type=str, default=None,  help='taus')
 parser.add_argument('--num_particles', type=int, default=100,  help='num_particles')
 parser.add_argument('--w_o_CPN', type=str2bool, default=False,  help='with out CPN')
 parser.add_argument('--w_o_Scene_occlusion', type=str2bool, default=False,  help='with out secne occlusion')
+parser.add_argument('--nth_photo', type=int, default=0,  help='show nth testing data result')
 opt = parser.parse_args()
 
 if opt.taus is not None:
@@ -31,13 +32,13 @@ if opt.gaussian_std is not None:
 import lib.particle_filter as particle_filter
 
 if __name__ == '__main__':
-    print(opt)
+    # print(opt)
     pf = particle_filter.ParticleFilter(opt.dataset, opt.dataset_root_dir, visualization=opt.visualization, gaussian_std=opt.gaussian_std, max_iteration=opt.max_iteration, taus=opt.taus, num_particles=opt.num_particles, w_o_CPN=opt.w_o_CPN, w_o_Scene_occlusion=opt.w_o_Scene_occlusion)
     
     processing_time_record = ""
     processing_time_for_an_object_record = ""
     if opt.dataset == "ycb":
-        for now in tqdm(range(0, len(pf.testlist))):
+        for now in tqdm(range(opt.nth_photo, opt.nth_photo+1)):
             processing_time = time.time()
             img = cv2.imread('{0}/{1}-color.jpg'.format(pf.dataset_root_dir, pf.testlist[now]))
             depth = np.array(Image.open('{0}/{1}-depth.png'.format(pf.dataset_root_dir, pf.testlist[now])))
@@ -52,7 +53,7 @@ if __name__ == '__main__':
             meta = scio.loadmat('{0}/{1}-meta.mat'.format(pf.dataset_root_dir, pf.testlist[now]))
             indices = meta['cls_indexes'] #id of ycb objects
             
-            ("indices : ", indices)
+            print("indices : ", indices)
 
             labels = label[label > 0]
             labels = np.unique(labels)
@@ -83,7 +84,9 @@ if __name__ == '__main__':
                     np.save(opt.save_path+pf.models[itemid-1]+"_"+str(now), pose)
 
             processing_time_record_str = "Finish No.{0} image, Processing time : {1}".format(now, time.time() - processing_time)
+            print(processing_time_record_str)
             processing_time_record += processing_time_record_str + '\n'
+
 
     write_str = ""
     if os.path.isfile(opt.save_path + "result.txt"):

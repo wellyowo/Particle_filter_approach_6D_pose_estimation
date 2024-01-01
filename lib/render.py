@@ -30,7 +30,7 @@ def getDepth(info):
 
 """ Register the observed depth image into the renderer. """
 def setSrcDepthImage(info, depth_src, other_objects_region):
-  other_objects_region = np.asarray(other_objects_region, dtype=np.bool)
+  other_objects_region = np.asarray(other_objects_region, dtype=bool)
   depth_src = np.asarray(depth_src, dtype=np.float32)
   Render.SetSrcDepth(c_void_p(depth_src.ctypes.data), c_void_p(other_objects_region.ctypes.data))
 

@@ -275,7 +275,7 @@ def load_scene_gt(path):
   for im_id, im_gt in scene_gt.items():
     for gt in im_gt:
       if 'cam_R_m2c' in gt.keys():
-        gt['cam_R_m2c'] = np.array(gt['cam_R_m2c'], np.float).reshape((3, 3))
+        gt['cam_R_m2c'] = np.array(gt['cam_R_m2c'], float).reshape((3, 3))
       if 'cam_t_m2c' in gt.keys():
-        gt['cam_t_m2c'] = np.array(gt['cam_t_m2c'], np.float).reshape((3, 1))
+        gt['cam_t_m2c'] = np.array(gt['cam_t_m2c'], float).reshape((3, 1))
   return scene_gt

@@ -112,14 +112,14 @@ def get_rotation_samples_perch(label, num_samples):
 
 
         # # LM-O
-        # "Ape":          [0,7], #half_0-pi
-        # "Can":          [0,7], #whole_0-2pi
-        # "Cat" :         [0,7], #whole_0
-        # "Driller":      [0,7],  #whole_0-pi
-        # "Duck":         [0,7],
-        # "Eggbox":       [0,7], #half_0-pi
-        # "Glue":         [0,7],
-        # "Holepuncher":  [0,7], #half_0-pi
+        "Ape":          [0,7], #half_0-pi
+        "Can":          [0,7], #whole_0-2pi
+        "Cat" :         [0,7], #whole_0
+        "Driller":      [0,7],  #whole_0-pi
+        "Duck":         [0,7],
+        "Eggbox":       [0,7], #half_0-pi
+        "Glue":         [0,7],
+        "Holepuncher":  [0,7], #half_0-pi
 
     }
     

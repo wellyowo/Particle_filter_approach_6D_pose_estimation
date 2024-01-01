@@ -1,3 +1,3 @@
 #!/bin/bash
-python CenterFindNet/train.py \
-  --dataset_root_dir /media/user/433c5472-5bea-42d9-86c4-e0794e47477f/YCB_Video_Dataset
+python3 CenterFindNet/train_modify.py \
+  --dataset_root_dir /home/welly/Particle_filter_approach_6D_pose_estimation/dataset/ycb

@@ -16,16 +16,18 @@ from torch.autograd import Variable
 from datasets.dataset import ycb_dataset
 from lib.centroid_prediction_network_modify import CentroidPredictionNetwork_modify
 import matplotlib.pyplot as plt
+from torchsummary import summary
+from contextlib import redirect_stdout
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_root_dir', type=str, default = '', help='dataset root dir YCB_Video_Dataset')
-parser.add_argument('--batch_size', type=int, default = 12, help='batch size')
+parser.add_argument('--batch_size', type=int, default = 64, help='batch size')
 parser.add_argument('--workers', type=int, default = 10, help='number of data loading workers')
 parser.add_argument('--lr', default=0.0001, help='learning rate')
 parser.add_argument('--lr_rate', default=0.1, help='learning rate decay rate')
 parser.add_argument('--decay_margin', default=0.001, help='margin to decay lr & w')
 parser.add_argument('--noise_trans', default=0.03, help='range of the random noise of translation added to the training data')
-parser.add_argument('--nepoch', type=int, default=10, help='max number of epochs to train')
+parser.add_argument('--nepoch', type=int, default=51, help='max number of epochs to train')
 parser.add_argument('--resume_CPN', type=str, default = '',  help='resume CPN model')
 parser.add_argument('--start_epoch', type=int, default = 1, help='which epoch to start')
 opt = parser.parse_args()
@@ -41,10 +43,11 @@ def main():
     
     estimator = CentroidPredictionNetwork_modify(num_points = opt.num_points)
     estimator.cuda()
-    with open('CenterFindNet/model_structure.txt', 'wt+') as file:
-        print(estimator, file=file)
-        for name, param in estimator.named_parameters():
-            print(name, param.size(), file=file)
+    with open('CenterFindNet/trained_model/test/model_structure.txt', 'wt+') as file:
+        with redirect_stdout(file):
+            input1 = torch.randn(1, opt.num_points, 3).cuda()
+            input2 = torch.randn(1, opt.num_points, 3).cuda()
+            summary(estimator, input1, input2)
     file.close()
 
     if opt.resume_CPN != '':
@@ -68,7 +71,7 @@ def main():
 
     with open('CenterFindNet/trained_model/test/log_{0}.txt'.format(time.strftime("%Hh %Mm %Ss", time.localtime(time.time()))), 'wt+') as log_file:
         for epoch in range(opt.start_epoch, opt.nepoch):
-            print('learning rate %f' ,optimizer.param_groups[0]['lr'], file=log_file)
+            print('learning rate ' ,optimizer.param_groups[0]['lr'], file=log_file)
             print('Train time {0}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)) + ', ' + 'Training started'))
             print('Train time {0}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)) + ', ' + 'Training started'), file=log_file)
             train_count = 0
@@ -84,7 +87,7 @@ def main():
                 loss = criterion(centroid, gt_centroid)
                 loss.backward()
 
-                train_dis += loss.item()*data[0].size(0)
+                train_dis += loss.item()
                 train_count += 1
 
                 print('Train time {0} Epoch {1} Batch {2} Frame {3} Avg_dis:{4}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)), epoch, train_count, train_count * opt.batch_size, loss.item()))
@@ -96,7 +99,7 @@ def main():
 
                 if train_count != 0 and train_count % 1000 == 0:
                     torch.save(estimator.state_dict(), '{0}/CPN_model_current.pth'.format(opt.outf))
-            train_dis_avg = train_dis / len(dataloader.dataset)
+            train_dis_avg = train_dis / train_count
             train_losses.append(train_dis_avg)
             print('Train time {0} Epoch {1} TRAIN FINISH Avg dis: {2}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)), epoch, train_dis_avg))
             print('Train time {0} Epoch {1} TRAIN FINISH Avg loss: {2}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)), epoch, train_dis_avg), file=log_file)
@@ -112,14 +115,13 @@ def main():
             estimator.eval()
 
             for j, data in enumerate(testdataloader, 0):
-
                 points, model_points, gt_centroid = data
                 points, model_points, gt_centroid = Variable(points).cuda(), Variable(model_points).cuda(), Variable(gt_centroid).cuda()
                 centroid = estimator(points, model_points)
                 loss = criterion(centroid, gt_centroid)
 
-                test_dis += loss.item()*data[0].size(0)
-                print('Test time {0} Test Batch:{1} dis:{2}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)), test_count, loss))
+                test_dis += loss.item()
+                print('Test time {0} Test Batch No.{1} dis:{2}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)), test_count, loss))
 
                 test_count += 1
 
