@@ -79,7 +79,7 @@ RUN apt-get -o Acquire::ForceIPv4=true update && apt-get -yq dist-upgrade \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install \
+RUN sudo -H pip3 install \
     scipy \
     transforms3d \
     open3d \

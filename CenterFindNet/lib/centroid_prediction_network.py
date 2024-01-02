@@ -67,4 +67,4 @@ class CentroidPredictionNetwork(nn.Module):
         out_tx = tx.contiguous().transpose(2, 1).contiguous()
 
         return out_tx
- 
+    

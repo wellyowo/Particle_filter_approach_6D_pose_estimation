@@ -27,8 +27,9 @@ parser.add_argument('--dataset_root_dir', type=str, default='', help='dataset ro
 parser.add_argument('--save_path', type=str, default='',  help='save results path')
 parser.add_argument('--model_path', type=str, default='/trained_model/CPN_model_91_0.00023821471899932882.pth',  help='save results path')
 parser.add_argument('--visualization', type=str2bool, default=False,  help='visualization')
+parser.add_argument('--show_time', type=int, default=0, help='an integer for the accumulator')
 opt = parser.parse_args()
-
+show_time = opt.show_time
 
 """ Load Centroid Prediction Network """
 model_path = libpath + opt.model_path
@@ -284,7 +285,7 @@ if __name__ == '__main__':
     
     if opt.dataset == "ycb":
         for now in tqdm(range(0, len(testlist))):
-            img = cv2.imread('{0}/{1}-color.png'.format(opt.dataset_root_dir, testlist[now]))
+            img = cv2.imread('{0}/{1}-color.jpg'.format(opt.dataset_root_dir, testlist[now]))
             depth = np.array(Image.open('{0}/{1}-depth.png'.format(opt.dataset_root_dir, testlist[now])))
 
             label = np.array(Image.open('{0}/{1}-label.png'.format(opt.dataset_root_dir, testlist[now])))
@@ -312,10 +313,11 @@ if __name__ == '__main__':
             
             if opt.visualization == True:
                 try:
-                    cv2.imshow("cv2_img", cv2_img)
-                    key = cv2.waitKey(0)
-                    if key == ord('q'):
-                        break
+                    if show_time != 0:
+                        cv2.imshow("cv2_img", cv2_img)
+                        key = cv2.waitKey(show_time)
+                        if key == ord('q'):
+                            cv2.destroyAllWindows()
                 except:
                     pass
 

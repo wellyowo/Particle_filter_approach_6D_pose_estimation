@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
+BASH_OPTION=bash
 IMG=uwwee/particle-filter-pose-estimator:latest
 
 
-containerid=$(docker ps -aqf "ancestor=${IMG}") && echo $containerid
 xhost +
+containerid=$(docker ps -aqf "ancestor=${IMG}") && echo $containerid
 docker exec -it \
     --privileged \
     -e DISPLAY=${DISPLAY} \
     -e LINES="$(tput lines)" \
     ${containerid} \
-    bash
-xhost -
+    $BASH_OPTION
+xhost - 
